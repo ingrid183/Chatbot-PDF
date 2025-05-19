@@ -8,7 +8,7 @@ Estel proyecto es una interfaz web con Streamlit que permite lecturas de pdfs y 
 > [!IMPORTANT]
 > Para correr satisfactoriamente la aplicación y configuración debes contar con UV Python y Ollama (LLMs Open Source).
 
-### 2. Instalar modelo de Ollama: [Llama3.1](https://ollama.com/library/llama3.1)
+### 2. Instalar modelo de Ollama: [Llama3](https://ollama.com/library/llama3)
 ```bash
 # Validar Ollama descargado
 ollama
@@ -18,8 +18,9 @@ ollama run llama3
 
 ### 3. Clona el repositorio e instalar dependencias
 ```bash
-git clone https://github.com/DonLuisM/languagesTranslate_Ollama.git
+git clone https:[//github.com/DonLuisM/languagesTranslate_Ollama.git
 cd languagesTranslate_Ollama
+](https://github.com/ingrid183/Chatbot-PDF)
 
 uv add
 uv sync
@@ -35,9 +36,6 @@ uv run app.py
 uv run streamlit run .\streamlit\app_st_cont.py   
 ```
 ---
-
-### :scroll: Licencia
-Licencia MIT – consulta el archivo [LICENSE](./LICENSE) para más detalles.
 
 ### :busts_in_silhouette: Autor:
 - [@ingrid183](https://github.com/ingrid183)
