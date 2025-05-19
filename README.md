@@ -1,4 +1,4 @@
-# :# Instrucciones del proyecto 
+# Instrucciones del proyecto 
 Estel proyecto es una interfaz web con Streamlit que permite lecturas de pdfs y realizar preguntas respecto a los pdf suministrados.
 
 
