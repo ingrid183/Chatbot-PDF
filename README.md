@@ -41,13 +41,13 @@ uv run streamlit run app.py
 
 ### 5. Ejemplos de ejecución
 
-#### Ejemplo 1 documento ejemplo tema que es y partes de un PDF
+#### Ejemplo 1 documento ejemplo. Tema que es y partes de un PDF
 
 ![Ejemplo 1](./Data/Ejemplo1.jpg)
 
 <br />
 
-#### Ejemplo 2 documento 77344439046, tema cambio climatico
+#### Ejemplo 2 documento 77344439046, Tema cambio climatico
 
 ![Ejemplo 2](./Data/Ejemplo2.jpg)
 
