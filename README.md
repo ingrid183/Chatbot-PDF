@@ -15,26 +15,34 @@ ollama
 
 # Descargar modelos Llama3
 ollama run llama3
+```
 
 ### 3. Clona el repositorio e instalar dependencias
 ```bash
-git clone https:[//github.com/DonLuisM/languagesTranslate_Ollama.git
-cd languagesTranslate_Ollama
-](https://github.com/ingrid183/Chatbot-PDF)
+git clone https://github.com/ingrid183/Chatbot-PDF
+cd Chatbot-PDF
 
 uv add
 uv sync
 ```
 
-### 4. Ejecutar la aplicación
+### 4. Ejecutar el streamlit
 ```bash
-uv run app.py
+uv run streamlit run app.py   
 ```
 
-### 5. Ejecutar el streamlit para comparar respuestas
-```bash
-uv run streamlit run .\streamlit\app_st_cont.py   
-```
+### 5. Ejemplos de ejecución
+
+#### Ejemplo 1
+
+![Ejemplo 1](./Data/Ejemplo1.jpg)
+
+<br />
+
+#### Ejemplo 2
+
+![Ejemplo 2](./Data/Ejemplo2.jpg)
+
 ---
 
 ### :busts_in_silhouette: Autor:
