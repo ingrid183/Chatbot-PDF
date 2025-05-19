@@ -8,13 +8,21 @@ Estel proyecto es una interfaz web con Streamlit que permite lecturas de pdfs y 
 > [!IMPORTANT]
 > Para correr satisfactoriamente la aplicación y configuración debes contar con UV Python y Ollama (LLMs Open Source).
 
-### 2. Instalar modelo de Ollama: [Llama3](https://ollama.com/library/llama3)
+### 2. Instalar modelos de Ollama: [Llama3](https://ollama.com/library/llama3)
 ```bash
 # Validar Ollama descargado
 ollama
 
 # Descargar modelos Llama3
 ollama run llama3
+
+
+# Descargar modelo gemma3:12b
+ollama pull gemma3:12b
+
+
+# Descargar modelo embedding 
+ollama pull nomic-embed-text
 ```
 
 ### 3. Clona el repositorio e instalar dependencias
