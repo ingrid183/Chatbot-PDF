@@ -10,7 +10,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langgraph.graph import START, StateGraph
 from typing_extensions import List, TypedDict
 from langchain_chroma import Chroma
-
+import tempfile
 
 embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
@@ -19,34 +19,13 @@ load_dotenv()
 os.environ["LANGSMITH_TRACING"] = "true"
 os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
 
-
-vector_store = Chroma(
-    collection_name="example_collection",
-    embedding_function=embeddings,
-    persist_directory="./chroma_langchain_db",  # Where to save data locally, remove if not necessary
-)
-
 llm = ChatOllama(
-    model = "qwen:4b",
+    model = "gemma3:12b",
     temperature = 0.0,
     num_predict = 256,
     top_p=0.5,
 )
 
-# 1. Cargar el PDF
-loader = PyPDFLoader(r"C:\Users\Ingrid\Documents\ACTIVIDAD_1\ejemplo.pdf")  # ejemplo: "data/mi_archivo.pdf"
-documents = loader.load()
-
-# 2. Dividir el texto en fragmentos
-text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,      # Tamaño máximo del fragmento
-    chunk_overlap=50     # Superposición entre fragmentos
-)
-split_docs = text_splitter.split_documents(documents)
-
-_ = vector_store.add_documents(documents=split_docs)
-
-# Verificar
 
 # Define prompt for question-answering
 prompt = hub.pull("rlm/rag-prompt")
@@ -59,29 +38,55 @@ class State(TypedDict):
 
 
 # Define application steps
-def retrieve(state: State):
+def retrieve(state: State, vector_store):
     print('State: ')
     print(state)
     retrieved_docs = vector_store.similarity_search(state["question"])
     return {"context": retrieved_docs}
 
-
 def generate(state: State):
-    print('State 2')
-    print(state)
     docs_content = "\n\n".join(doc.page_content for doc in state["context"])
-    messages = prompt.invoke({"question": state["question"], "context": docs_content})
+
+    messages = [
+        {"role": "system", "content": "Responde en español. Eres un experto en análisis de documentos PDF y debes responder con base en el contexto proporcionado."},
+        {"role": "user", "content": f"Pregunta: {state['question']}\n\nContexto:\n{docs_content}"},
+    ]
+
     response = llm.invoke(messages)
     return {"answer": response.content}
 
 
-# Compile application and test
-# * Hace los llamados para LangSmith
-graph_builder = StateGraph(State).add_sequence([retrieve, generate])
-graph_builder.add_edge(START, "retrieve")
-graph = graph_builder.compile()
 
-def get_response_model(user_input):
+def get_response_model(user_input, uploaded_pdf):
+    # Guardar PDF temporalmente
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+        tmp.write(uploaded_pdf.read())
+        tmp_path = tmp.name
+
+    # Procesar PDF
+    loader = PyPDFLoader(tmp_path)
+    documents = loader.load()
+
+    # Dividir el texto
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    split_docs = text_splitter.split_documents(documents)
+
+    # Crear vectorstore temporal (RAM)
+    vector_store = Chroma(
+    collection_name="example_collection",
+    embedding_function=embeddings,
+    persist_directory="./chroma_langchain_db",  # Where to save data locally, remove if not necessary
+    )
+
+    # Crear el grafo con pasos
+    graph_builder = StateGraph(State)
+    graph_builder.add_node("retrieve", lambda s: retrieve(s, vector_store))
+    graph_builder.add_node("generate", generate)
+    graph_builder.set_entry_point("retrieve")
+    graph_builder.add_edge("retrieve", "generate")
+    graph = graph_builder.compile()
+
     response = graph.invoke({"question": user_input})
     return response
+
 
