@@ -58,25 +58,20 @@ def generate(state: State):
 
 
 def get_response_model(user_input, uploaded_pdf):
-    # Guardar PDF temporalmente
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
         tmp.write(uploaded_pdf.read())
         tmp_path = tmp.name
 
-    # Procesar PDF
     loader = PyPDFLoader(tmp_path)
     documents = loader.load()
-
-    # Dividir el texto
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     split_docs = text_splitter.split_documents(documents)
-
-    # Crear vectorstore temporal (RAM)
     vector_store = Chroma(
-    collection_name="example_collection",
-    embedding_function=embeddings,
-    persist_directory="./chroma_langchain_db",  # Where to save data locally, remove if not necessary
+        collection_name='example_collection',
+        embedding_function=embeddings,
+        persist_directory='./chromadb',
     )
+    _ = vector_store.add_documents(documents=split_docs)
 
     # Crear el grafo con pasos
     graph_builder = StateGraph(State)
